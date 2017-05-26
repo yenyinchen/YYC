@@ -26,3 +26,5 @@ http://topepo.github.io/caret/index.html
 
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html
+### grep, grepl, regexpr, gregexpr
+http://www.regular-expressions.info/rlanguage.html
