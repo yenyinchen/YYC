@@ -22,7 +22,7 @@ http://r4ds.had.co.nz/
 ## Caret
 http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf
 https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf
-
+http://topepo.github.io/caret/index.html
 
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html
