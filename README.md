@@ -33,10 +33,10 @@ The regexpr function takes the same arguments as grepl. regexpr returns an integ
 
 gregexpr is the same as regexpr, except that it finds all matches in each string. It returns a vector with the same length as the input vector. Each element is another vector, with one element for each match found in the string indicating the character position at which that match was found. Each vector element in the returned vector also has a match.length attribute with the lengths of all matches. If no matches could be found in a particular string, the element in the returned vector is still a vector, but with just one element -1.
 
-> regexpr("a+", c("abc", "def", "cba a", "aa"), perl=TRUE)
-[1]  1 -1  3  1
-attr(,"match.length")
-[1]  1 -1  1  2
+> regexpr("a+", c("abc", "def", "cba a", "aa"), perl=TRUE)  
+[1]  1 -1  3  1  
+attr(,"match.length")  
+[1]  1 -1  1  2  
 > gregexpr("a+", c("abc", "def", "cba a", "aa"), perl=TRUE)
 [[1]]  [1] 1    attr(,"match.length")  [1] 1
 [[2]]  [1] -1   attr(,"match.length")  [1] -1
