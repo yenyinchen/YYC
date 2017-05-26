@@ -1,4 +1,3 @@
-# YYC
 
 ##  dplyr
 ### DPLYR TUTORIAL (WITH 50 EXAMPLES)
@@ -17,7 +16,8 @@ https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-some
 https://s3.amazonaws.com/assets.datacamp.com/img/blog/data+table+cheat+sheet.pdf
 https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html
 
-
+## R for Data Science
+http://r4ds.had.co.nz/
 
 ## Caret
 http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf
