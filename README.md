@@ -37,8 +37,8 @@ gregexpr is the same as regexpr, except that it finds all matches in each string
 [1]  1 -1  3  1  
 attr(,"match.length")  
 [1]  1 -1  1  2  
-> gregexpr("a+", c("abc", "def", "cba a", "aa"), perl=TRUE)
-[[1]]  [1] 1    attr(,"match.length")  [1] 1
-[[2]]  [1] -1   attr(,"match.length")  [1] -1
-[[3]]  [1] 3 5  attr(,"match.length")  [1] 1 1
-[[4]]  [1] 1    attr(,"match.length")  [1] 2
+> gregexpr("a+", c("abc", "def", "cba a", "aa"), perl=TRUE)  
+[[1]]  [1] 1   attr(,"match.length")  [1] 1  
+[[2]]  [1] -1   attr(,"match.length")  [1] -1  
+[[3]]  [1] 3 5  attr(,"match.length")  [1] 1 1  
+[[4]]  [1] 1    attr(,"match.length")  [1] 2  
