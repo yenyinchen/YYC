@@ -32,6 +32,8 @@ http://topepo.github.io/caret/index.html
 * Building Predictive Models in R Using the caret Package  
 http://www.jstatsoft.org/v28/i05/paper  
 
+--  
+---  
 
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html  
