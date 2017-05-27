@@ -1,4 +1,8 @@
 
+## R Narkdown Cheetsheet  
+https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+
+---
 ##  dplyr
 * DPLYR TUTORIAL (WITH 50 EXAMPLES)  
 http://www.listendata.com/2016/08/dplyr-tutorial.html
@@ -18,7 +22,7 @@ https://s3.amazonaws.com/assets.datacamp.com/img/blog/data+table+cheat+sheet.pdf
 https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html  
 
 ---------------------------------------------------------------------------------------
-## R for Data Science
+## Website for R for Data Science Book
 http://r4ds.had.co.nz/  
 
 -----
@@ -27,16 +31,16 @@ http://r4ds.had.co.nz/
 http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf
 * A Short Introduction to the caret Package Max Kuhn  
 https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf  
-
+* Website for detailed explaination for Caret Package  
 http://topepo.github.io/caret/index.html
+* Bootcamp Machine Learning Toolbox  
+https://www.datacamp.com/courses/machine-learning-toolbox  
 * Building Predictive Models in R Using the caret Package  
 http://www.jstatsoft.org/v28/i05/paper  
 
   
---- 
+ 
 ***
---
-
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html  
 ### grep, grepl, regexpr, gregexpr
