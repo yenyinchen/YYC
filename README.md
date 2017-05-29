@@ -1,10 +1,9 @@
 
 ## R Narkdown Cheetsheet  
 https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf  
-
+* An Example R Markdown  
 http://www.statpower.net/Content/310/R%20Stuff/SampleMarkdown.html  
-
-* Latex Symbol
+* Latex Symbol  
 http://www.rpi.edu/dept/arc/training/latex/LaTeX_symbols.pdf  
 
 ---
