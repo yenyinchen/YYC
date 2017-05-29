@@ -1,6 +1,8 @@
 
 ## R Narkdown Cheetsheet  
-https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf  
+
+http://www.statpower.net/Content/310/R%20Stuff/SampleMarkdown.html  
 
 ---
 ##  dplyr
