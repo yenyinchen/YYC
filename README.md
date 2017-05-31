@@ -1,5 +1,5 @@
 
-## R Narkdown Cheetsheet  
+## R Markdown Cheetsheet  
 https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf  
 * An Example R Markdown  
 http://rmarkdown.rstudio.com/authoring_basics.html  
@@ -41,6 +41,7 @@ https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf
 https://www.datacamp.com/courses/machine-learning-toolbox  
 * Building Predictive Models in R Using the caret Package  
 http://www.jstatsoft.org/v28/i05/paper  
+
 
 ***
 ## Regular Expression in R
