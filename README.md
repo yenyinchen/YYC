@@ -42,7 +42,9 @@ https://www.datacamp.com/courses/machine-learning-toolbox
 * Building Predictive Models in R Using the caret Package  
 http://www.jstatsoft.org/v28/i05/paper  
 
-
+***
+## Factor  
+https://www.stat.berkeley.edu/classes/s133/factors.html
 ***
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html  
