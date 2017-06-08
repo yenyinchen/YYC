@@ -1,0 +1,2 @@
+## Converting variable types—use PUT() or INPUT()? 
+http://blogs.sas.com/content/sgf/2015/05/01/converting-variable-types-do-i-use-put-or-input/
