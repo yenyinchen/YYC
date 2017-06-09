@@ -31,9 +31,9 @@ http://r4ds.had.co.nz/
 
 -----
 ## Caret
-* Website for detailed explaination for Caret Package  (very detailed)
+- Website for detailed explaination for Caret Package  (very detailed)
 http://topepo.github.io/caret/index.html
-* Predictive Modeling with R and the caret Package useR! 2013  
+- Predictive Modeling with R and the caret Package useR! 2013  
 http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf
 * A Short Introduction to the caret Package Max Kuhn  
 https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf  
