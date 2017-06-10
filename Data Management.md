@@ -2,7 +2,7 @@ Today we’re going to look at three functions that let you manipulate data fram
 
 For adding (or overwriting) a column to a data frame, like in the above example, any of the three functions is perfectly adequate; they just have slightly different syntaxes. with often has the most concise formulation, though there isn’t much in it.  
 
-  anorexia$wtDiff <- with(anorexia, Postwt - Prewt)  
+..anorexia$wtDiff <- with(anorexia, Postwt - Prewt)  
   anorexia <- within(anorexia, wtDiff2 <- Postwt - Prewt)
 anorexia <- transform(anorexia, wtDiff3 = Postwt - Prewt)
 For multiple changes to the data frame, all three functions can still be used, but now the syntax for with is more cumbersome. I tend to favour within or transform in these situations.
