@@ -20,6 +20,9 @@ https://blog.rstudio.org/2016/06/27/dplyr-0-5-0/
 https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly/27840349#27840349
 
 ---------------------------------------------------------------------------------------
+## reshape2
+http://seananderson.ca/2013/10/19/reshape.html  
+------------------------------------------------------------------------
 ## Data.table
 * Introduction to data.table  
 https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html  
