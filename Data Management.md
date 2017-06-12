@@ -4,3 +4,5 @@ https://www.r-bloggers.com/friday-function-triple-bill-with-vs-within-vs-transfo
 - What is the difference between `transform` and `within`
 https://stackoverflow.com/questions/22417662/what-is-the-difference-between-transform-and-within
 
+## Find duplicate values in R
+https://stackoverflow.com/questions/16905425/find-duplicate-values-in-r
