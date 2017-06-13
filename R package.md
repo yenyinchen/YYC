@@ -22,6 +22,8 @@ https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-some
 http://www.dataschool.io/dplyr-tutorial-for-faster-data-manipulation-in-r/
 * do()
 http://stat545.com/block023_dplyr-do.html#meet-do
+https://www.r-bloggers.com/dplyr-do-some-tips-for-using-and-programming/
+
 ---------------------------------------------------------------------------------------
 ## reshape2
 http://seananderson.ca/2013/10/19/reshape.html  
