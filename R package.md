@@ -18,7 +18,10 @@ https://blog.exploratory.io/dplyr-0-5-is-awesome-heres-why-be095fd4eb8a
 https://blog.rstudio.org/2016/06/27/dplyr-0-5-0/
 * dplyr vs data.table  
 https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly/27840349#27840349
-
+* Watch the dplyr tutorial on YouTube
+http://www.dataschool.io/dplyr-tutorial-for-faster-data-manipulation-in-r/
+* do()
+http://stat545.com/block023_dplyr-do.html#meet-do
 ---------------------------------------------------------------------------------------
 ## reshape2
 http://seananderson.ca/2013/10/19/reshape.html  
