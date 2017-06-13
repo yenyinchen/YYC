@@ -27,6 +27,8 @@ http://seananderson.ca/2013/10/19/reshape.html
 ## Data.table
 * Introduction to data.table  
 https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html  
+* Advanced tips and tricks with data.table  
+http://brooksandrew.github.io/simpleblog/articles/advanced-data-table/  
 * Data,table cheatsheet  
 https://s3.amazonaws.com/assets.datacamp.com/img/blog/data+table+cheat+sheet.pdf  
 
