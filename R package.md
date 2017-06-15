@@ -9,6 +9,10 @@ http://www.statpower.net/Content/310/R%20Stuff/SampleMarkdown.html
 http://www.rpi.edu/dept/arc/training/latex/LaTeX_symbols.pdf  
 
 ---
+# 100 FREE TUTORIALS FOR LEARNING R
+* http://www.listendata.com/p/r-programming-tutorials.html
+
+
 ##  dplyr
 * DPLYR TUTORIAL (WITH 50 EXAMPLES)  
 http://www.listendata.com/2016/08/dplyr-tutorial.html
@@ -30,6 +34,8 @@ http://seananderson.ca/2013/10/19/reshape.html
 
 ------------------------------------------------------------------------
 ## Data.table
+* R : DATA.TABLE TUTORIAL (WITH 50 EXAMPLES)
+http://www.listendata.com/2016/10/r-data-table.html
 * Introduction to data.table  
 https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html  
 * Advanced tips and tricks with data.table  
