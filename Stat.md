@@ -18,3 +18,4 @@ https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours
 * code for the book  http://www-bcf.usc.edu/~gareth/ISL/code.html
 
 ## One standard error rule
+https://stats.stackexchange.com/questions/138569/why-is-lambda-plus-1-standard-error-a-recommended-value-for-lambda-in-an-elastic
