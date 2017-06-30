@@ -19,3 +19,7 @@ https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours
 
 ## One standard error rule
 https://stats.stackexchange.com/questions/138569/why-is-lambda-plus-1-standard-error-a-recommended-value-for-lambda-in-an-elastic
+
+
+## CMU 10-725 Convex 
+http://www.stat.cmu.edu/~ryantibs/convexopt/
