@@ -23,3 +23,7 @@ https://stats.stackexchange.com/questions/138569/why-is-lambda-plus-1-standard-e
 
 ## CMU 10-725 Convex 
 http://www.stat.cmu.edu/~ryantibs/convexopt/
+
+## glmnet package
+https://web.stanford.edu/~hastie/Papers/Glmnet_Vignette.pdf  
+https://rstudio-pubs-static.s3.amazonaws.com/54576_142b58255f8944c990c5663290d28517.html  
