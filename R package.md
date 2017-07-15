@@ -61,6 +61,10 @@ https://www.datacamp.com/courses/machine-learning-toolbox
 http://www.jstatsoft.org/v28/i05/paper  
 
 ***
+## harvard tutorial for R
+http://tutorials.iq.harvard.edu/  
+
+***
 ## Factor  
 https://www.stat.berkeley.edu/classes/s133/factors.html
 ***
