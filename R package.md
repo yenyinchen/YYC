@@ -68,6 +68,12 @@ http://tutorials.iq.harvard.edu/
 ## Factor  
 https://www.stat.berkeley.edu/classes/s133/factors.html
 ***
+## RODBC
+http://rprogramming.net/connect-to-database-in-r/
+https://cran.r-project.org/web/packages/RODBCext/vignettes/Parameterized_SQL_queries.html 
+Using R To Make Repetitive SQL Queries A Snap
+http://rstudio-pubs-static.s3.amazonaws.com/144155_126a55dd883c4a1b8505467281670ea9.html
+
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html  
 ### grep, grepl, regexpr, gregexpr
