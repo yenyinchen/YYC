@@ -68,14 +68,14 @@ http://tutorials.iq.harvard.edu/
 ## Factor  
 https://www.stat.berkeley.edu/classes/s133/factors.html
 ***
-## RODBC
-http://rprogramming.net/connect-to-database-in-r/
-Using R with databases 
-A speedy combination: DB2 10.5 with dashDB and R  
+## RODBC  
+http://rprogramming.net/connect-to-database-in-r/  
+Using R with databases--A speedy combination: DB2 10.5 with dashDB and R  
 https://www.ibm.com/developerworks/data/library/techarticle/dm-1402db2andr/index.html  
 SQL join example  
 https://cran.r-project.org/web/packages/RODBCext/vignettes/Parameterized_SQL_queries.html 
-
+Getting Access data into R (R-blogger)  
+https://www.r-bloggers.com/getting-access-data-into-r/
 Using R To Make Repetitive SQL Queries A Snap  
 http://rstudio-pubs-static.s3.amazonaws.com/144155_126a55dd883c4a1b8505467281670ea9.html
 
