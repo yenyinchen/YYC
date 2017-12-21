@@ -6,3 +6,6 @@ https://stackoverflow.com/questions/22417662/what-is-the-difference-between-tran
 
 ## Find duplicate values in R
 https://stackoverflow.com/questions/16905425/find-duplicate-values-in-r
+
+## Relative frequencies / proportions with dplyr
+https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr
