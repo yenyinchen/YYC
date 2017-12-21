@@ -16,3 +16,6 @@ When you group by multiple variables, each summary peels off one level of the gr
 ## 3-2 5 Most Practically Useful Window (Table) Calculations in R
 
 https://webcache.googleusercontent.com/search?q=cache:CPwhfDt4VkQJ:https://blog.exploratory.io/5-most-practically-useful-window-table-calculations-in-r-7e2c7ca431d9+&cd=3&hl=en&ct=clnk&gl=us
+
+## 4 How to convert a table to a data frame
+https://stackoverflow.com/questions/10758961/how-to-convert-a-table-to-a-data-frame
