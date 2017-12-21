@@ -9,3 +9,7 @@ https://stackoverflow.com/questions/16905425/find-duplicate-values-in-r
 
 ## Relative frequencies / proportions with dplyr
 https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr
+
+From the dplyr vignette:
+When you group by multiple variables, each summary peels off one level of the grouping. That makes it easy to progressively roll-up a dataset".
+
