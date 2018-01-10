@@ -19,3 +19,6 @@ https://webcache.googleusercontent.com/search?q=cache:CPwhfDt4VkQJ:https://blog.
 
 ## 4 How to convert a table to a data frame
 https://stackoverflow.com/questions/10758961/how-to-convert-a-table-to-a-data-frame
+
+## 5 Non-standard-evaluation and standard evaluation in dplyr
+https://www.r-bloggers.com/non-standard-evaluation-and-standard-evaluation-in-dplyr/
