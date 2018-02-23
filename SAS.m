@@ -563,4 +563,4 @@ z <- read.xlsx("\\\\chnas01\\URC\\URC-Private\\Fraud\\USERS\\Yen-Yin\\Jury count
          axis.text.x=element_text(size=14, colour="blue"),
          strip.text = element_text(face="bold", size=rel(1.3)))
     
-         
+    
