@@ -1,0 +1,475 @@
+rm(list=ls())
+gc()
+
+run.dir <- "run_2017_11_25"
+vendor.file <- "VINS_FOR_DRN_2018_02_21_scans_plated.txt"  #
+veh.detail.file <- "VEHICLE_DETAIL_CP4_2017_11_25.csv"
+
+monitor.filename <- "monitor_out_GA_SC_2017_11_25.csv"
+
+library(microbenchmark)
+library(profvis)
+library(data.table)
+library(geosphere)
+library(dplyr)
+library(tidyr)
+library(sp)
+library(rgdal)
+library(rgeos)
+library(ggplot2)
+library(maptools)
+library(coda)
+library(tmap)
+library(RColorBrewer)
+library(hexbin)
+library(maps)
+library(zipcode)
+library(devtools)
+library(dbscan)
+library(lazyeval)
+library(magrittr)
+library(broom)
+library(openxlsx)
+
+rated_states <- c("GA", "SC")
+
+#sighted_states <- c("new jersey", "pennsylvania", "maryland", "delaware", "district of columbia",
+#                    "virginia", "new york", "north carolina", "south carolina", "georgia", "florida", "tennessee")
+
+sighted_states <- c("NY", "PA", "MD", "DE", "DC", "VA", "NJ", "NC", "CO",
+                    "SC", "GA", "FL", "TN", "LA", "OK", "AR", "NM", "TX", "AL")
+
+library(geoclustR)
+#devtools::load_all("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\geoclustR")
+
+setwd(paste0("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\rated location pilot runs\\", run.dir))
+
+get_adj_base_rates <- dget("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\rated location pilot runs\\get_adj_base_rates.R")
+
+gen.example.train <- dget("../gen_example_train.R")
+
+data(state_lookup)
+data(zipCodeCentroids)
+
+reverse_state_lookup <- names(state_lookup)
+
+names(reverse_state_lookup) <- state_lookup
+
+
+
+
+#read vendor data
+#setwd("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\rated location pilot runs\\run_2017_11_11\\")
+setwd(paste0("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\rated location pilot runs\\", run.dir))
+
+vendor.data.raw <- fread(vendor.file, sep = '\t', colClasses = 'character')
+vendor.data.raw <- vendor.data.raw[, state := NULL]     ################################
+
+names(vendor.data.raw) <- c('VIN','Scans','plate',	'platestate', 'VehicleYear',  'VehicleMake', 'VehicleModel')
+
+vendor.data.header <- vendor.data.raw[ , c("VIN", "plate", "platestate"), with = FALSE]
+
+#vendor file has all data points in a single JSON string, so we will parse it into a more useable format.
+scan.data <- vendor.data.raw %>% filter(Scans != "[]" & nchar(Scans) > 0) %>% select(VIN, Scans) %>% data.table()
+
+scan.data$Scans <- strsplit(
+  gsub("\\]","",scan.data$Scans),
+  "}",
+  fixed=TRUE)
+
+scan.data <- rbindlist(lapply(scan.data$VIN, function(x)
+  data.table(VIN = x, Scans = data.table::transpose(scan.data[x, on = "VIN"] %$% Scans)) ))
+
+scan.data$Sighted_Latitude <- sapply(scan.data$Scans,
+                                     function(x){
+                                       reg.match <- regmatches(x, regexec("\'Latitude\': \'[\\-0-9.]{1,}", x, perl = TRUE))
+                                       if(nchar(reg.match) > 0) return(substr(reg.match, 14, nchar(reg.match)))
+                                       else return("")
+                                     }
+                                     )
+
+
+scan.data$Sighted_Longitude <- sapply(scan.data$Scans,
+                                     function(x){
+                                       reg.match <- regmatches(x, regexec("\'Longitude\': \'[\\-0-9.]{1,}", x, perl = TRUE))
+                                       if(nchar(reg.match) > 0) return(substr(reg.match, 15, nchar(reg.match)))
+                                       else return("")
+                                     }
+)
+
+scan.data$DateTime <- sapply(scan.data$Scans,
+                                      function(x){
+                                        reg.match <- regmatches(x, regexec("\'ScanDate\': \'[0-9]{4}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}[0-9.]{0,}", x, perl = TRUE))
+                                        if(nchar(reg.match) > 0) return(substr(reg.match, 14, nchar(reg.match)))
+                                        else return("")
+                                      }
+)
+
+vendor.data <- merge(vendor.data.header, scan.data[ , c("VIN", "Sighted_Latitude", "Sighted_Longitude", "DateTime"), with = FALSE], by = "VIN")
+data.table::setnames(vendor.data, "plate", "CarNumber")
+
+vendor.data$Sighted_Latitude %<>% as.numeric()
+vendor.data$Sighted_Longitude %<>% as.numeric()
+
+#the vendor truncated some of outputs
+truncated.vendor.data <- vendor.data[!is.na(Sighted_Longitude) | !is.na(Sighted_Longitude)]
+
+vendor.data <- vendor.data[!is.na(Sighted_Longitude) & !is.na(Sighted_Longitude)]
+
+
+#read edw and carfax data
+veh.detail <- fread(veh.detail.file,
+                    colClasses=c("APLCNT_PSTL_PRMRY_ZIP_CD"="character",
+                                 "RTD_PSTL_PRMRY_CD"="character",
+                                 "CARFAX_ZIPCODE"="character",
+                                 "PLCY_NB"= "character",
+                                 "USE_CD" = "character"))
+
+
+
+adj_br <- get_adj_base_rates() 
+
+#get cp sectors
+CP_ZIP_GRP <- fread("\\\\chnas01\\URC\\URC-Private\\Customer Information\\SECURE\\RCPOS\\Code\\kjs\\geographic cluster analysis\\CP_ZIP_GRP.csv",  na.strings="")
+
+## State Sectors ##
+st_sectors <- CP_ZIP_GRP %>%
+  filter(EXPIRATION_DT == '31Dec9999' & RISK_STATE_CD %in% rated_states) %>%
+  mutate(sector = ZIP_GROUP) %>% select(POSTAL_CD, sector)
+
+
+
+
+
+
+#filter on only license plates in state sample
+modeling.data <- merge(veh.detail,vendor.data, by = "VIN")
+
+
+
+modeling.data$sighted.state <- modeling.data %>%
+  geoclustR::LookupStateFromGeo(long = "Sighted_Longitude", lat = "Sighted_Latitude")
+
+
+
+modeling.data %<>%
+  filter(sighted.state %in% sighted_states & nchar(CarNumber) > 0)
+
+modeling.data$alpha_ind = sapply(modeling.data$CarNumber, function(x) gsub('[A-Z]', '1',gsub('[0-9]','0',x)))
+
+modeling.data$ACQUISITION_DATE[grepl("^ *$", modeling.data$ACQUISITION_DATE)] <- NA
+
+modeling.data <- mutate_(modeling.data,
+                      ACQUISITION_DATE = ~as.Date(ACQUISITION_DATE),
+                      ACNT_DT = ~as.Date(ACNT_DT), Sight.Date = ~ as.Date(DateTime))
+
+
+
+#we lack address-based geocoding, so we will use zipcode centroids for now
+data(zipCodeCentroids)
+
+modeling.data %<>%
+  base::merge(zipCodeCentroids, by.x = "RTD_PSTL_PRMRY_CD", by.y = "ZIP") %>%
+  dplyr::rename(`Given Address Longitude` = zip_long, `Given Address Latitude` = zip_lat)
+
+train <- modeling.data %>% filter(as.integer(Sight.Date) > as.integer(ACNT_DT) - 366)
+
+train.orig <- train
+
+
+train$binned.sight.date  <- with(train,
+                                 cut(x = Sight.Date,
+                                     breaks = seq(from = min(Sight.Date)-0.5,
+                                                  to = max(Sight.Date)+6.5,
+                                                  by = 7 ), right = FALSE, include.lowest = TRUE ) ) %>%
+  as.character() %>% as.Date()
+
+
+
+binned.train <- train %>%
+  group_by(VIN, CarNumber, sighted.state,
+           `Given Address Latitude`, `Given Address Longitude`,
+           PLCY_NB, ACNT_DT, CMPNY_CD,
+           RTD_PSTL_PRMRY_CD, RTD_ST_CD, binned.sight.date, USE_CD, TITLING_STATE_CODE, platestate,
+           APLCNT_ADRS_LTTD_DGRE_CN, APLCNT_ADRS_LNGTD_DGRE_CN, APLCNT_PSTL_PRMRY_ZIP_CD, APLCNT_ST_CD) %>%
+  summarise( Sighted_Latitude = median(Sighted_Latitude),
+             Sighted_Longitude = median(Sighted_Longitude)) %>% data.table()
+
+
+#use small angle approx to project sphere to plane
+binned.train$long.proj <- with(binned.train,
+                               3959 * cos( Sighted_Latitude * pi / 180) * ( Sighted_Longitude - `Given Address Longitude` ) * pi / 180 )
+
+binned.train$lat.proj <- with(binned.train,
+                              3959 * ( Sighted_Latitude - `Given Address Latitude` ) * pi / 180 )
+
+
+#
+#####################################################################################
+##Now generate actual function for purpose of applying to data.
+#####################################################################################
+#####################################################################################
+
+
+#build.clusters <- geoclustR::BuildClusters(in.data = binned.train, minPts = 3, eps = 15)
+
+build.clusters.ga <- geoclustR::BuildClusters(in.data = binned.train[RTD_ST_CD == "GA"], minPts = 3, eps = 15)
+build.clusters.sc <- geoclustR::BuildClusters(in.data = binned.train[RTD_ST_CD == "SC"], minPts = 3, eps = 15)
+
+
+build.clusters <- base::rbind(build.clusters.ga, build.clusters.sc)
+
+train.with.cluster <- binned.train %>% merge(build.clusters, by="VIN")
+
+
+cluster.centroids.df <- geoclustR::GetCentroids(in.data=train.with.cluster,
+                                  cluster='clusters', sight.date = 'binned.sight.date', cluster.recency = 184)
+
+
+
+cluster.fin <- binned.train %>% group_by(VIN) %>%
+  summarize(binned.sight.date = max(binned.sight.date)) %>%
+  merge(binned.train, by = c("VIN","binned.sight.date")) %>%
+  select(VIN, Sighted_Longitude, Sighted_Latitude,
+         `Given Address Longitude`, `Given Address Latitude`,
+         CMPNY_CD, PLCY_NB, ACNT_DT, USE_CD, RTD_PSTL_PRMRY_CD,
+         RTD_ST_CD, TITLING_STATE_CODE, platestate, CarNumber, APLCNT_ADRS_LTTD_DGRE_CN, APLCNT_ADRS_LNGTD_DGRE_CN,
+         APLCNT_ST_CD, APLCNT_PSTL_PRMRY_ZIP_CD ) %>%
+  group_by(VIN,
+           `Given Address Longitude`, `Given Address Latitude`,
+           CMPNY_CD, PLCY_NB, ACNT_DT, USE_CD, RTD_PSTL_PRMRY_CD,
+           RTD_ST_CD, TITLING_STATE_CODE, platestate, CarNumber, APLCNT_ADRS_LTTD_DGRE_CN, APLCNT_ADRS_LNGTD_DGRE_CN,
+           APLCNT_ST_CD, APLCNT_PSTL_PRMRY_ZIP_CD) %>%
+  summarize(Sighted_Longitude = median(Sighted_Longitude, na.rm=TRUE), Sighted_Latitude = median(Sighted_Latitude, na.rm=TRUE)) %>%
+  merge(cluster.centroids.df, by="VIN")
+
+
+
+cluster.fin$recent.dist <- cluster.fin %>%
+  geoclustR::CalcDistance(long1 = "Sighted_Longitude", lat1 = "Sighted_Latitude",
+  long2 = "Given Address Longitude",
+  lat2 = "Given Address Latitude")
+
+
+cluster.fin$cluster.dist <- cluster.fin %>%
+  geoclustR::CalcDistance(long1 = "centroidLongitude",
+                          lat1 = "centroidLatitude",
+                          long2 = "Given Address Longitude",
+                          lat2 = "Given Address Latitude")
+
+
+cluster.fin$sighted.zip <- cluster.fin %>%
+  geoclustR::LookupZipFromGeo(long="Sighted_Longitude", lat="Sighted_Latitude") %>% as.numeric()
+
+
+cluster.fin$centroid.zip <- cluster.fin %>%
+  geoclustR::LookupZipFromGeo(long="centroidLongitude",
+                   lat="centroidLatitude") %>% as.numeric()
+
+cluster.fin$RTD_PSTL_PRMRY_CD %<>% as.numeric
+
+cluster.fin$sector <- NULL
+cluster.fin %<>% merge(st_sectors, by.x = 'centroid.zip', by.y = 'POSTAL_CD', all.x = TRUE)
+
+cluster.fin$sector[is.na(cluster.fin$sector)] <- 'ZZ'
+
+#cluster.fin$sector <- 'ZZ'
+
+cluster.fin$Company <- sapply(cluster.fin$CMPNY_CD,
+                              function(x){
+                                if(x == 'CC'){'GC'}
+                                else if(x == 'GG'){'GE'}
+                                else{x}
+                              })
+
+
+cluster.fin$cluster.state <- cluster.fin %>%
+  geoclustR::LookupStateFromGeo(long = "centroidLongitude", lat = "centroidLatitude" )
+
+cluster.fin$centroid.adj_base_rate <- NULL
+
+cluster.fin <- cluster.fin %>%
+  merge(adj_br,
+        by.x=c("centroid.zip"),
+        by.y=c("ZIP"), all.x=T) %>%
+  rename(centroid.adj_base_rate = adj_base_rate)
+
+
+#cluster.fin$centroid.adj_base_rate[cluster.fin$cluster.state == 'DC'] <- adj_br$adj_base_rate[adj_br$ZIP == 0]
+#cluster.fin[is.na(cluster.fin$sighted.adj_base_rate),"cluster.state"] %>% table()
+
+cluster.fin$given.adj_base_rate <- NULL
+
+cluster.fin <- cluster.fin %>%
+  merge(adj_br,
+        by.x=c("RTD_PSTL_PRMRY_CD"),
+        by.y=c("ZIP"), all.x=T) %>%
+  rename(given.adj_base_rate  = adj_base_rate)
+
+#count "real" locations
+cluster.fin %<>%
+  mutate(real_location = cluster.state == RTD_ST_CD |
+           cluster.state == APLCNT_ST_CD |
+           cluster.state == platestate ) %>%
+#           cluster.state == TITLING_STATE_CODE) %>%
+  group_by(VIN) %>%
+  summarize(num_loc = sum(real_location)) %>%
+  right_join(cluster.fin, by = "VIN")
+
+
+###########################################################################################
+#   Draw histogram
+#############################################################################################
+
+SC_p <- cluster.fin$cluster.dist[cluster.fin$RTD_ST_CD == "SC" & cluster.fin$USE_CD == "1" &  cluster.fin$cluster.dist <= 100]
+SC_c <- cluster.fin$cluster.dist[cluster.fin$RTD_ST_CD == "SC" & cluster.fin$USE_CD != "1" &  cluster.fin$cluster.dist <= 100]
+#hist(SC_c) + abline(h = 0, v = 65, col = "gray60") #60
+#hist(SC_p) + abline(h = 0, v = 65, col = "gray60") #90
+
+GA_p <- cluster.fin$cluster.dist[cluster.fin$sector == "ZZ" & cluster.fin$USE_CD == "1" &  cluster.fin$cluster.dist <= 100]
+GA_c <- cluster.fin$cluster.dist[cluster.fin$sector == "ZZ" & cluster.fin$USE_CD != "1" &  cluster.fin$cluster.dist <= 100]
+hist(GA_c)  #50
+hist(GA_p)  #80
+
+ATL_p <- cluster.fin$cluster.dist[cluster.fin$sector %in% c("NA","SA") & cluster.fin$USE_CD == "1" &  cluster.fin$cluster.dist <= 100]
+ATL_c <- cluster.fin$cluster.dist[cluster.fin$sector %in% c("NA","SA") & cluster.fin$USE_CD != "1" &  cluster.fin$cluster.dist <= 100]
+hist(ATL_p)  #50
+hist(ATL_c)  
+
+###########################################################################################
+#   clustering
+#############################################################################################
+
+flag.cen.dist <- 65
+flag.cen.dist.commute <- 65
+
+flag.cen.dist.d <- 25
+flag.cen.dist.m <- 20
+flag.cen.dist.b <- 25
+
+flag.cen.dist.sa.p <- 65
+flag.cen.dist.sa.c <- 50
+flag.cen.dist.na.p <- 65
+flag.cen.dist.na.c <- 50
+
+rec.sight.dist <- 10
+#min.prem.dist <- 25
+#min.prem.rel <- 1.1
+min.prem.rel <- 1.1
+
+
+flagged.clusters <- cluster.fin[
+  !is.na(cluster.fin$VIN)&
+  !is.na(cluster.fin$cluster.dist) &
+  cluster.fin$num_loc <= 1 &
+  !is.na(cluster.fin$centroid.adj_base_rate - cluster.fin$given.adj_base_rate) &
+    ( (cluster.fin$sector == 'ZZ' & cluster.fin$USE_CD == 1 & cluster.fin$cluster.dist >= flag.cen.dist & cluster.fin$recent.dist >= rec.sight.dist) |
+      (cluster.fin$sector == 'ZZ' & cluster.fin$USE_CD != 1 & cluster.fin$cluster.dist >= flag.cen.dist.commute & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.d & cluster.fin$sector == 'D'   & cluster.fin$USE_CD == 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.b & cluster.fin$sector == 'B'   & cluster.fin$USE_CD == 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.sa.p & cluster.fin$sector == 'SA' & cluster.fin$USE_CD == 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.sa.c & cluster.fin$sector == 'SA' & cluster.fin$USE_CD != 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.na.p & cluster.fin$sector == 'NA' & cluster.fin$USE_CD == 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.na.c & cluster.fin$sector == 'NA' & cluster.fin$USE_CD != 1 & cluster.fin$recent.dist >= rec.sight.dist) |
+        (cluster.fin$cluster.dist >= flag.cen.dist.m & cluster.fin$sector == 'M'   & cluster.fin$USE_CD == 1 & cluster.fin$recent.dist >= rec.sight.dist) 
+      
+      
+      ) &
+    cluster.fin$centroid.adj_base_rate / cluster.fin$given.adj_base_rate >=
+    min.prem.rel &
+    (cluster.fin$cluster.state == cluster.fin$RTD_ST_CD |
+ #   cluster.fin$cluster.state == cluster.fin$TITLING_STATE_CODE |
+    cluster.fin$cluster.state == cluster.fin$platestate |
+    cluster.fin$cluster.state == cluster.fin$APLCNT_ST_CD), ]
+
+flagged.clusters %<>% filter(!is.na(VIN))
+
+flagging.vins <- flagged.clusters %$% unique(VIN)
+
+n_distinct(vendor.data$VIN) / n_distinct(veh.detail$VIN)*100
+n_distinct(cluster.fin$VIN) / n_distinct(veh.detail$VIN)*100
+n_distinct(flagging.vins) / n_distinct(veh.detail$VIN)*100
+
+
+#===================================================================================#
+#calculate the flag by plcy_nb
+a_GA <- flagged.clusters %>% filter(RTD_ST_CD == "GA") %>% summarize(u_vin = n_distinct(PLCY_NB))   
+a_SC <- flagged.clusters %>% filter(RTD_ST_CD == "SC") %>% summarize(u_vin = n_distinct(PLCY_NB))   
+t_GA <- veh.detail %>% filter(RTD_ST_CD == "GA") %>% summarize(u_vin = n_distinct(PLCY_NB)) 
+t_SC <- veh.detail %>% filter(RTD_ST_CD == "SC") %>% summarize(u_vin = n_distinct(PLCY_NB)) 
+a_GA  #8    policies
+t_GA  #1246 plcies
+a_SC  #7    policies\
+t_SC  #706  plcies
+(a_GA/t_GA)*100  #0.64%
+(a_SC/t_SC)*100  #0.99%
+
+#t_GA <- veh.detail %>% filter(RTD_ST_CD == "GA") %>% summarize(u_vin = n_distinct(VIN)) 
+#t_SC <- veh.detail %>% filter(RTD_ST_CD == "SC") %>% summarize(u_vin = n_distinct(VIN)) 
+#t_GA
+#t_SC
+
+flagged.clusters[ flagged.clusters$RTD_ST_CD == "GA", "PLCY_NB"]
+nrow(unique(flagged.clusters[ flagged.clusters$RTD_ST_CD == "GA", "PLCY_NB"]))
+flagged.clusters[ flagged.clusters$RTD_ST_CD == "GA", ]
+a<- flagged.clusters[ flagged.clusters$RTD_ST_CD == "GA",]
+############################################################################
+
+length(flagged.clusters %>%
+         filter(RTD_ST_CD == "GA") %$%
+         unique(PLCY_NB))/
+  n_distinct(veh.detail %>%
+               filter(RTD_ST_CD == "GA") %$%
+               unique(PLCY_NB))*100
+
+length(flagged.clusters %>%
+         filter(RTD_ST_CD == "SC") %$%
+         unique(PLCY_NB))/
+  n_distinct(veh.detail %>%
+               filter(RTD_ST_CD == "SC") %$%
+               unique(PLCY_NB))*100
+
+
+output <- flagged.clusters %>%
+  transmute(`Policy Number` = PLCY_NB, VIN, `Rated State` = RTD_ST_CD, `Rated Zip Code` = RTD_PSTL_PRMRY_CD,
+         `Vehicle Plate State` = platestate, `License Plate Number` = CarNumber, `Application State` = APLCNT_ST_CD,
+         `Discovered State` = cluster.state, `Discovered Zip Code` = centroid.zip, `Distance to Sightings` = round(cluster.dist) )
+
+write.csv(output, file = paste0("lican_qload_", "GA_SC_", Sys.Date(),".csv"))
+
+save.image(file = paste0("run",Sys.Date(),SC_GA,".RData"))
+
+monitor_exhibit <- flagged.clusters %>%
+  group_by(RTD_ST_CD) %>%
+  summarize(flagged_policies = n_distinct(PLCY_NB)) %>%
+  left_join(
+veh.detail %>% group_by(RTD_ST_CD) %>% summarize(sent_policies = n_distinct(PLCY_NB)),
+by = "RTD_ST_CD") %>%
+  mutate(flag_rate = round(100 * flagged_policies / sent_policies, 1))
+
+write.csv(monitor_exhibit, file = monitor.filename)
+
+
+
+#checking
+#
+#flagging.vins.va <- flagged.clusters %>% filter(RTD_ST_CD == "VA") %$% unique(VIN)
+#flagging.vins.md <- flagged.clusters %>% filter(RTD_ST_CD == "MD") %$% unique(VIN)
+#flagging.vins.fl <- flagged.clusters %>% filter(RTD_ST_CD == "FL") %$% unique(VIN)
+#flagging.vins.ny <- flagged.clusters %>% filter(RTD_ST_CD == "NY") %$% unique(VIN)
+#
+#gen.example.train(binned.train,
+#                  flagging.vins.md[2],
+#                  minPnts = 3, spatial.eps = 15, cluster.recency = 184,
+#                  map.title = paste("Flagged Vehicle:", flagging.vins.md[2]),
+#                  analysis_states = reverse_state_lookup[sighted_states])
+#
+#
+#cluster.fin %>%
+#  filter(VIN == "5TDZA23C56S403855") %>%
+#  select(VIN, RTD_PSTL_PRMRY_CD, centroid.zip, USE_CD, PLCY_NB, RTD_ST_CD, cluster.state,
+#         platestate, APLCNT_ST_CD, recent.dist, cluster.dist, sector, centroid.adj_base_rate, given.adj_base_rate)
+
+#############################
+#############################
+
