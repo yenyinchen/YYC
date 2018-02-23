@@ -1,5 +1,6 @@
 CP + carma + prism
-
+/*---------------------------*/
+/*1 jury sas pull            */
 proc sql;
 create table jury_cap as 
 select 
@@ -249,6 +250,8 @@ quit;
 
 
 /*-------------------------------------------*/
+/* 2. R part                                 */
+/*------------------------------------------*/
 
 #1 LR vs avg score1
 ggplot(data = Q) + geom_point(mapping = aes(x=avg_score_1, y=LR, color=Jury_group  ))
