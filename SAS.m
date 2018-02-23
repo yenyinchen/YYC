@@ -245,3 +245,322 @@ from jury_cap   /*jury_group_cap*/
 group by Jury_group
 ;
 quit;
+
+
+
+/*-------------------------------------------*/
+
+#1 LR vs avg score1
+ggplot(data = Q) + geom_point(mapping = aes(x=avg_score_1, y=LR, color=Jury_group  ))
+ggplot(Q , 
+       aes(x=avg_score_1, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+#  scale_y_continuous(limits = c(0,1.2), breaks=seq(0,1.2,0.15) ) +
+  scale_x_continuous(limits = c(0,60), breaks=seq(0,60,10) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+ggtitle("avg score1 vs LR")
+#2 PD_LR vs PIP_LR
+ggplot(data = Q) + geom_point(mapping = aes(x=PD_LR, y=PIP_LR, color=Jury_group  ))
+ggplot(Q , 
+       aes(x=PD_LR, y=PIP_LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,1.2)  ) +
+  scale_x_continuous(limits = c(0,0.8)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("PIP_LR vs PD_LR")
+
+#3 PD_freq vs PIP_freq
+ggplot(data = Q) + geom_point(mapping = aes(x=PD_freq, y=PIP_freq, color=Jury_group  ))
+ggplot(Q , 
+       aes(x=PD_freq, y=PIP_freq, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,0.07)  ) +
+  scale_x_continuous(limits = c(0,0.09)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("PD_freq vs PIP_freq")
+
+
+#4 LR vs DP1_percent
+ggplot(data = Q) + geom_point(mapping = aes(x=DP1_percent, y=LR, color=Jury_group  ))
+
+ggplot(Q , 
+       aes(x=DP1_percent, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=13, colour="blue")) + 
+  scale_y_continuous(limits = c(0,1.2)  ) +
+  scale_x_continuous(limits = c(0,0.0002)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("LR vs DP1_percent")
+
+#5 avg_score_1 vs avg_score_2
+ggplot(data = Q) + geom_point(mapping = aes(x=avg_score_1, y=avg_score_2, color=Jury_group  ))
+ggplot(Q , 
+       aes(x=avg_score_1, y=avg_score_2, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=13, colour="blue")) + 
+  scale_y_continuous(limits = c(-50,0)  ) +
+  scale_x_continuous(limits = c(0,60)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg_score_1 vs avg_score_2")
+
+
+
+#===================================================================#
+# Section 1B 3Q16~3Q17 Stike
+#===================================================================#
+x <- read.xlsx("\\\\chnas01\\URC\\URC-Private\\Fraud\\USERS\\Yen-Yin\\Jury count_OCT2017\\raw_j.xlsx",  sheetName = "whole")
+x <- fread("\\\\chnas01\\URC\\URC-Private\\Fraud\\USERS\\Yen-Yin\\Jury count_OCT2017\\STRIKE_GROUP_CAP.csv", sep = ",", header= TRUE)
+
+names(x)
+#1 LR vs avg score1
+#1-A LR
+ggplot(x ,aes(x=avg_score_1, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg score1 vs LR")
+
+ggplot(x , 
+       aes(x=avg_score_1, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,1.0), breaks=seq(0,1.0,0.1) ) +
+  scale_x_continuous(limits = c(0,60), breaks=seq(0,60,10) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg score1 vs LR")
+
+
+#1-B CAP vs Np CAP
+ggplot(x ,aes(x=avg_score_1, y=LR_cap, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) +
+  scale_y_continuous(limits = c(0.59,0.85), breaks=seq(0.59,0.85,0.03) ) +
+  scale_x_continuous(limits = c(0,60), breaks=seq(0,60,10) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg score1 vs LR_cap")
+
+ggplot(x ,aes(x=avg_score_1, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) +
+  scale_y_continuous(limits = c(0.59,0.85), breaks=seq(0.59,0.85,0.03) ) +
+  scale_x_continuous(limits = c(0,60), breaks=seq(0,60,10) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg score1 vs LR")
+
+#2 PD_LR vs PIP_LR
+ggplot(data = x) + geom_point(mapping = aes(x=PD_LR, y=PIP_LR, color=Jury_group  ))
+ggplot(x , 
+       aes(x=PD_LR, y=PIP_LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,1.2)  ) +
+  scale_x_continuous(limits = c(0,0.8)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("PIP_LR vs PD_LR")
+
+#3 PD_freq vs PIP_freq
+ggplot(data = x) + geom_point(mapping = aes(x=PD_freq, y=PIP_freq, color=Jury_group  ))
+ggplot(x , 
+       aes(x=PD_freq, y=PIP_freq, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,0.07)  ) +
+  scale_x_continuous(limits = c(0,0.092)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("PD_freq vs PIP_freq")
+
+
+#4 LR vs DP1_percent
+ggplot(data = x) + geom_point(mapping = aes(x=DP1_percent, y=LR, color=Jury_group  ))
+
+ggplot(x , 
+       aes(x=DP1_percent, y=LR, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=13, colour="blue")) + 
+  scale_y_continuous(limits = c(0,1.25)  ) +
+  scale_x_continuous(limits = c(0,0.016)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("LR vs DP1_percent")
+
+#5 avg_score_1 vs avg_score_2
+ggplot(data = x) + geom_point(mapping = aes(x=avg_score_1, y=avg_score_2, color=Jury_group  ))
+ggplot(x , 
+       aes(x=avg_score_1, y=avg_score_2, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=13, colour="blue")) + 
+  scale_y_continuous(limits = c(-50,0)  ) +
+  scale_x_continuous(limits = c(0,60)  ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14)) + 
+  ggtitle("avg_score_1 vs avg_score_2")
+
+
+
+
+#===================================================================#
+# Section 1C 3Q16~3Q17 CARMA Analysis
+#===================================================================#
+
+#1 o_convictions_chng  vs No_occurence_chng
+ggplot(x , 
+       aes(x=No_convictions_chng, y=No_occurence_chng, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,0.18), breaks=seq(0,0.18,0.03) ) +
+  scale_x_continuous(limits = c(0,0.3), breaks=seq(0,0.3,0.06) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14))
+#scale_y_continuous(breaks=(0, max(x$No_occurence_chng) +0.01, 0.03))
+
+
+#2 no_of_vhcl_chng vs no_drvr_chng
+
+ggplot(data = x) + geom_point(mapping = aes(x=no_of_vhcl_chng, y=no_drvr_chng, color=Jury_group  ))
+
+ggplot(x , 
+       aes(x=No_convictions_chng, y=No_occurence_chng, color=Jury_group  ))  + 
+  geom_point(size=4) + 
+  theme(axis.title = element_text(size=16, colour="darkred"), 
+        axis.text = element_text(size=14, colour="blue")) + 
+  scale_y_continuous(limits = c(0,0.18), breaks=seq(0,0.18,0.03) ) +
+  scale_x_continuous(limits = c(0,0.3), breaks=seq(0,0.3,0.06) ) +
+  theme( plot.title = element_text(color="black", size=21, face="bold"),
+         legend.text = element_text(size =14)) +
+  theme(legend.title = element_text(size = 14))
+
+
+
+
+
+
+
+
+#===================================================================#
+# Section 2 CP Stike
+#===================================================================# 
+ggplot(y, aes(x = One_Two , y=reorder(Strike, One_Two))) +
+  geom_point(size=3) + # Use a larger dot
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(colour="grey60", linetype="dashed"))
+
+
+#1 Get the names, sorted first by group, then by value
+nameorder <- y$Strike[order(ordered(y$group, levels=c("One_Two", "Three", "Four_plus", "NULL")), y$value)]
+
+#2 Turn name into a factor, with levels in the order of nameorder
+y$Strike <- factor(y$Strike, levels=nameorder)
+
+#3 Draw plot
+
+ ggplot(y, aes(x=value, y=Strike)) +
+  geom_segment(aes(yend=Strike), xend=0, colour="grey50") +
+  geom_point(size=3, aes(colour=group)) + 
+  scale_colour_brewer(palette="Set1", limits=c("One_Two","Three", "Four_plus", "NULL"), guide=FALSE) +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank()) +
+   
+   
+   
+  facet_grid(factor(y$group, levels=c("One_Two", "Three", "Four_plus", "NULL"))~ ., scales="free_y", space="free_y") +
+  ggtitle("CP Strike Comparison") +
+   theme(axis.text.y=element_text(size=13, colour="black"),
+         axis.text.x=element_text(size=14, colour="blue"),
+         strip.text = element_text(face="bold", size=rel(1.3)))
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ #----------------
+ nameorder <- y$Strike[order(ordered(y$group, levels=c("One_Two", "Three", "Four_plus", "NULL")))]
+ ggplot(y, aes(x=value, y=Strike)) +
+   geom_segment(aes(yend=Strike), xend=0, colour="grey50") +
+   geom_point(size=3, aes(colour=group)) + 
+   scale_colour_brewer(palette="Set1", limits=c("One_Two","Three", "Four_plus", "NULL"), guide=FALSE) +
+   theme_bw() +
+   theme(panel.grid.major.y = element_blank()) +
+   
+   
+   
+   facet_grid(factor(y$group, levels=c("One_Two", "Three", "Four_plus", "NULL"))~ ., scales="free_y", space="free_y") +
+   ggtitle("CP Strike Comparison") +
+   theme(axis.text.y=element_text(size=13, colour="black"),
+         axis.text.x=element_text(size=14, colour="blue"),
+         strip.text = element_text(face="bold", size=rel(1.3)))
+ 
+ 
+ 
+ #-----
+#===================================================================#
+# Section 3 Carma Change
+#===================================================================# 
+ 
+z <- read.xlsx("\\\\chnas01\\URC\\URC-Private\\Fraud\\USERS\\Yen-Yin\\Jury count_OCT2017\\raw_j.xlsx",  sheetName = "Sheet3")
+  
+ #1 Get the names, sorted first by group, then by value
+ nameorder <- z$carma[order(ordered(z$group, levels=c("One_Two", "Three", "Four_plus", "NULL")), z$value)]
+ #2 Turn name into a factor, with levels in the order of nameorder
+ z$carma <- factor(z$carma, levels=nameorder)
+ 
+ #3 Draw plot
+ 
+ ggplot(z, aes(x=value, y=carma)) +
+   geom_segment(aes(yend=carma), xend=0, colour="grey50") +
+   geom_point(size=3, aes(colour=group)) + 
+   scale_colour_brewer(palette="Set1", limits=c("One_Two","Three", "Four_plus", "NULL"), guide=FALSE) +
+   theme_bw() +
+   theme(panel.grid.major.y = element_blank()) +
+   facet_grid(factor(z$group, levels=c("One_Two", "Three", "Four_plus", "NULL"))~ ., scales="free_y", space="free_y") +
+   ggtitle("CARMA Change Comparison") +
+   theme(axis.text.y=element_text(size=13, colour="black"),
+         axis.text.x=element_text(size=14, colour="blue"),
+         strip.text = element_text(face="bold", size=rel(1.3)))
+    
+         
