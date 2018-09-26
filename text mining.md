@@ -1,3 +1,35 @@
+
+
+Yen-Yin Chen
+5480 Wisconsin Ave Apt 1115,
+Chevy Chase, MD 20815
+Phone: 850-345-4869
+Email: yenyin28@gmail.com
+09/26/2018
+Highland House
+
+5480 Wisconsin Ave,
+Chevy Chase, MD 20815
+
+Dear (Name of landlord or manager),
+This letter constitutes my written 60-day notice that I will be moving out of my apartment on 11/30/2018, the end of my current lease.
+Please advise me on when my security deposit of $____ will be returned, as well as if you will be taking any money out for damages that fall outside of normal wear and tear.
+I can be reached at 850 345 4869 or email at yenyin28@gmail.com after 11/30/2018.
+Sincerely,
+Yen-Yin Chen
+
+Apt 1115
+I would like to schedule a move-out walkthrough in the week prior to my move for an inspection of my apartment. I believe that the apartment is in good condition and my security deposit of $_____ should be refunded in full.
+Thank you for your time and consideration on the above matter.
+Sincerely,
+
+
+
+
+
+
+
+
 ## Regular Expression in R
 http://stat545.com/block022_regular-expression.html  
 ### grep, grepl, regexpr, gregexpr
